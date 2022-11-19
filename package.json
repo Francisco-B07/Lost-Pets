@@ -1,0 +1,29 @@
+{
+  "name": "desafio-final",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./be-src/index.ts",
+    "dev:front": "parcel serve ./fe-src/index.html",
+    "dev": "npx concurrently \"yarn dev:front\" \"yarn dev:be\"",
+    "build:be": "tsc",
+    "build:front": "parcel build ./fe-src/index.html",
+    "build": "yarn build:front && yarn build:be",
+    "start:be": "node ./be-dist/index.js",
+    "sync": "ts-node ./be-src/sync.ts"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "@vaadin/router": "^1.7.4",
+    "concurrently": "^7.5.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^2.0.20",
+    "parcel": "^2.7.0",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.25.3",
+    "typescript": "^4.8.4"
+  }
+}

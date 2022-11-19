@@ -1,0 +1,15 @@
+:root {
+  --estrella-Ganaste: rgba(108, 180, 108, 1);
+  --fondo-Ganaste: rgba(136, 137, 73, 0.9);
+  --estrella-Perdiste: rgba(220, 91, 73, 1);
+  --fondo-Perdiste: rgba(137, 73, 73, 0.9);
+  --estrella-Empate: rgb(247, 247, 15);
+  --fondo-Empate: rgb(202, 202, 42);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: "Libre Baskerville", serif;
+}
