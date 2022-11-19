@@ -3,7 +3,7 @@ import { Auth } from "./models";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
-import { createProduct } from "./controllers/users-controller";
+// import { createProduct } from "./controllers/users-controller";
 import { User } from "./models/users";
 import { sequelize } from "./models/conn";
 

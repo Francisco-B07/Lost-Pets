@@ -1,7 +1,6 @@
 {
   "name": "desafio-final",
   "version": "1.0.0",
-  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./be-src/index.ts",
@@ -10,7 +9,7 @@
     "build:be": "tsc",
     "build:front": "parcel build ./fe-src/index.html",
     "build": "yarn build:front && yarn build:be",
-    "start:be": "node ./be-dist/index.js",
+    "start": "node ./be-dist/index.js",
     "sync": "ts-node ./be-src/sync.ts"
   },
   "dependencies": {
