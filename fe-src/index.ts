@@ -14,7 +14,7 @@ import "./router";
 import { state } from "./state";
 
 (function () {
+  state.init();
   initHeader();
   const root = document.querySelector(".root")!;
-  state.init();
 })();

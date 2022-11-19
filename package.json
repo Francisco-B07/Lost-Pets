@@ -7,7 +7,7 @@
     "dev:front": "parcel serve ./fe-src/index.html",
     "dev": "npx concurrently \"yarn dev:front\" \"yarn dev:be\"",
     "build:be": "tsc",
-    "build:front": "parcel build ./fe-src/index.html",
+    "build:front": "parcel build ./fe-src/index.html --dist-dir ./be-dist/dist",
     "build": "yarn build:front && yarn build:be",
     "start": "node ./be-dist/be-src/index.js",
     "sync": "ts-node ./be-src/sync.ts"
