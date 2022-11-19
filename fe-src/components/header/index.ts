@@ -11,6 +11,7 @@ export function initHeader() {
       const cs = state.getState();
       const localData = localStorage.getItem("state");
       const localDataNow = JSON.parse(localData);
+      const token = localDataNow.token || "";
 
       const buttonNavbarTogglerEl = document.querySelector(".navbar-toggler");
       const linkMisDatosEl = document.querySelector(".mis-datos");
@@ -35,7 +36,7 @@ export function initHeader() {
       linkMisDatosEl.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
 
-        if (localDataNow.token != "") {
+        if (token != "") {
           Router.go("/mis-datos");
         } else {
           Router.go("/ingresar");
@@ -43,7 +44,7 @@ export function initHeader() {
       });
       linkMascotasReportadasEl.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
-        if (localDataNow.token != "") {
+        if (token != "") {
           Router.go("/mis-mascotas-reportadas");
         } else {
           Router.go("/ingresar");
@@ -51,7 +52,7 @@ export function initHeader() {
       });
       linkReportarMascotasEl.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
-        if (localDataNow.token != "") {
+        if (token != "") {
           Router.go("/reportar-mascota");
         } else {
           Router.go("/ingresar");
