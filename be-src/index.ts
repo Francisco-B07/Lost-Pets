@@ -18,7 +18,7 @@ function getSHA256ofString(text: string) {
 
 // -------------- CONSTANTES --------------
 const port = process.env.PORT || 3000;
-const staticDirPath = path.resolve(__dirname, "../dist");
+const staticDirPath = path.resolve(__dirname, "../../dist");
 const app = express();
 
 // -------------- Middleware  --------------
