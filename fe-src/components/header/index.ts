@@ -9,7 +9,8 @@ export function initHeader() {
       // this.shadow = this.attachShadow({ mode: "open" });
       this.render();
       const cs = state.getState();
-      const localData = localStorage.getItem("state");
+      const localData = localStorage.getItem("state") || "";
+
       const localDataNow = JSON.parse(localData);
       const token = localDataNow.token || "";
 
