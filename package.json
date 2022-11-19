@@ -9,7 +9,7 @@
     "build:be": "tsc",
     "build:front": "parcel build ./fe-src/index.html",
     "build": "yarn build:front && yarn build:be",
-    "start": "node ./be-dist/index.js",
+    "start": "node ./be-dist/be-src/index.js",
     "sync": "ts-node ./be-src/sync.ts"
   },
   "dependencies": {
