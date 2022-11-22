@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
-    "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./be-src/index.ts",
+    "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./dev.ts",
     "dev:front": "parcel serve ./fe-src/index.html",
     "dev": "npx concurrently \"yarn dev:front\" \"yarn dev:be\"",
     "build:be": "tsc",
@@ -15,14 +15,32 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "@vaadin/router": "^1.7.4",
+    "algoliasearch": "^4.14.2",
     "concurrently": "^7.5.0",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^8.5.1",
+    "mapbox-gl": "^2.11.0",
     "nodemon": "^2.0.20",
     "parcel": "^2.7.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.25.3",
     "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.3.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "util": "^0.12.5"
   }
 }

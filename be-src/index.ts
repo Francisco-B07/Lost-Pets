@@ -5,9 +5,14 @@ import * as jwt from "jsonwebtoken";
 import * as path from "path";
 // import { createProduct } from "./controllers/users-controller";
 import { User } from "./models/users";
+import { Pets } from "./models/pets";
 import { sequelize } from "./models/conn";
+import { index } from "./lib/algolia";
+
+// -------------- BORRA LA BASE DE DATOS --------------
 
 // sequelize.sync({ force: true }).then((res) => console.log(res));
+// sequelize.sync({ alter: true }).then((res) => console.log(res));
 
 // -------------- FUNCIÓN DEL SHA --------------
 const SECRET = "skdjrw34*ska#x57za$cka";
@@ -20,6 +25,9 @@ function getSHA256ofString(text: string) {
 const port = process.env.PORT || 3000;
 const staticDirPath = path.resolve(__dirname, "../dist");
 const app = express();
+
+// -------------- VARIABLES DE ENTORNO --------------
+// console.log(process.env.NODE_ENV);
 
 // -------------- Middleware  --------------
 app.use(express.json());
@@ -60,7 +68,7 @@ app.post("/auth/token", async (req, res) => {
   }
 });
 
-// -------------- CHECK --------------
+// -------------- CHECK USER EXIST--------------
 app.post("/check/email", async (req, res) => {
   const user = await User.findOne({ where: { email: req.body.email } });
   if (user === null) {
@@ -70,7 +78,7 @@ app.post("/check/email", async (req, res) => {
   }
 });
 
-// -------------- ME --------------
+// -------------- /ME --------------
 
 function authMiddleware(req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
@@ -88,8 +96,81 @@ app.get("/me", authMiddleware, async (req, res) => {
   res.json(user);
 });
 
+// -------------- CREAR PET --------------
+app.post("/pets", async (req, res) => {
+  const { name, lat, lng } = req.body;
+  const newPet = await Pets.create(req.body);
+  const algoliaRes = await index.saveObject({
+    name: newPet.get("name"),
+    _geoloc: {
+      lat: newPet.get("lat"),
+      lng: newPet.get("lng"),
+    },
+    objectID: newPet.get("id"),
+  });
+  res.json(newPet);
+});
+
+// -------------- OBTENER TODAS LAS MASCOTAS --------------
+app.get("/pets", async (req, res) => {
+  const allPets = await Pets.findAll();
+  res.json(allPets);
+});
+
+// -------------- OBTENER UNA MASCOTA --------------
+app.get("/pets/:id", async (req, res) => {
+  const pet = await Pets.findByPk(req.params.id);
+  res.json(pet);
+});
+
+// -------------- OBTENER UNA MASCOTA CERCA DE--------------
+app.get("/pets-cerca-de", async (req, res) => {
+  const { lat, lng } = req.query;
+  const { hits } = await index.search("", {
+    aroundLatLng: [lat, lng].join(","),
+    aroundRadius: 20000,
+  });
+  res.json(hits);
+});
+
+// -------------- ACTUALIZAR MASCOTA --------------
+
+function bodyToIndex(body, id?) {
+  const respuesta: any = {};
+
+  if (body.name) {
+    respuesta.name = body.name;
+  }
+
+  if (body.lat && body.lng) {
+    respuesta._geoloc = {
+      lat: body.lat,
+      lng: body.lat,
+    };
+  }
+  if (id) {
+    respuesta.objectID = id;
+  }
+  return respuesta;
+}
+
+app.put("/pets/:id", async (req, res) => {
+  const pet = await Pets.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  });
+
+  const indexItem = bodyToIndex(req.body, req.params.id);
+  // console.log(indexItem);
+
+  const algoliaRes = await index.partialUpdateObject(indexItem);
+  res.json(pet);
+});
+
 app.use(express.static(staticDirPath));
 
+// Usamos este handler para que express sirva la SPA con los archivos o rutas que no estan en 'dist'
 app.get("*", function (req, res) {
   const ruta = path.resolve(staticDirPath + "/index.html");
   res.sendFile(ruta);
