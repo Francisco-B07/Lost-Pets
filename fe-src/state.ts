@@ -2,14 +2,15 @@ const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:3000";
 
 // import map from "lodash/map";
 
-type Jugada = "piedra" | "papel" | "tijera" | "" | "nada";
-
 const state = {
   data: {
     email: "",
     fullName: "",
     userExist: false,
     token: "",
+    lng: 0,
+    lat: 0,
+    namePet: "",
   },
 
   listeners: [],
@@ -39,6 +40,21 @@ const state = {
   setToken(token: string) {
     const cs = this.getState();
     cs.token = token;
+    this.setState(cs);
+  },
+  setLng(lng: number) {
+    const cs = this.getState();
+    cs.lng = lng;
+    this.setState(cs);
+  },
+  setLat(lat: number) {
+    const cs = this.getState();
+    cs.lat = lat;
+    this.setState(cs);
+  },
+  setNamePet(namePet: string) {
+    const cs = this.getState();
+    cs.namePet = namePet;
     this.setState(cs);
   },
 
@@ -109,31 +125,45 @@ const state = {
         callback();
       });
   },
+  reportarPet(callback) {
+    const cs = this.getState();
 
-  // signIn(callback) {
-  //   const cs = this.getState();
-  //   if (cs.currentGame.nombre) {
-  //     fetch(API_BASE_URL + "/signin", {
-  //       method: "post",
-  //       headers: {
-  //         "content-type": "application/json",
-  //       },
-  //       body: JSON.stringify({ nombre: cs.currentGame.nombre }),
-  //     })
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then((data) => {
-  //         cs.playerId = data.id;
+    fetch(API_BASE_URL + "/pets", {
+      method: "post",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        name: cs.namePet,
+        lat: cs.lat,
+        lng: cs.lng,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
 
-  //         this.setState(cs);
-  //         callback();
-  //       });
-  //   } else {
-  //     console.error("No hay un nombre en el state");
-  //     callback(true);
-  //   }
-  // },
+        callback();
+      });
+  },
+  buscarPetsCerca(callback) {
+    const cs = this.getState();
+
+    fetch(API_BASE_URL + "/pets-cerca-de?lat=" + cs.lat + "&lng=" + cs.lng)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        callback();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  },
 
   setState(newState) {
     this.data = newState;

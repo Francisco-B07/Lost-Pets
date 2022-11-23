@@ -1,19 +1,47 @@
 import { state } from "../../state";
 import { Router } from "@vaadin/router";
 import * as Mapboxgl from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
 class ReportarMascota extends HTMLElement {
   // shadow: ShadowRoot;
   MAPBOX_TOKEN = process.env.MAPBOX_KEY;
+  lng: number = -68.5292228;
+  lat: number = -31.5346781;
   // mapboxClient = new MapboxClient(this.MAPBOX_TOKEN);
 
   mapa: Mapboxgl.Map;
   connectedCallback() {
     // this.shadow = this.attachShadow({ mode: "open" });
+
     this.render();
+    const inputEl = this.querySelector(".input-nombre-mascota");
+    const input = inputEl as any;
+    const cs = state.getState();
+
+    const botonReportar = this.querySelector(".boton-reportar");
+    const botonCancelar = this.querySelector(".boton-cancelar");
+    let geocoder = document.getElementById("geocoder");
 
     this.mapa = this.initMap();
-    // console.log("hola", process.env.NODE_ENV);
+    this.crearMarcador(this.lng, this.lat);
+    geocoder.appendChild(this.inputBuscador().onAdd(this.mapa));
+
+    botonReportar.addEventListener("click", () => {
+      if (input.value !== "") {
+        state.setNamePet(input.value);
+        state.setLng(this.lng);
+        state.setLat(this.lat);
+        state.reportarPet(() => {
+          Router.go("/mis-mascotas-reportadas");
+        });
+      } else {
+        alert("Debe ingresar un nombre para continuar");
+      }
+    });
+    botonCancelar.addEventListener("click", () => {
+      Router.go("/");
+    });
   }
 
   initMap() {
@@ -21,6 +49,41 @@ class ReportarMascota extends HTMLElement {
     return new Mapboxgl.Map({
       container: "map",
       style: "mapbox://styles/mapbox/streets-v11",
+      center: [this.lng, this.lat],
+      zoom: 14,
+    });
+  }
+
+  inputBuscador() {
+    const geocoder = new MapboxGeocoder({
+      accessToken: this.MAPBOX_TOKEN,
+      mapboxgl: Mapboxgl,
+    });
+    geocoder.on("result", ($event) => {
+      // console.log("resultado", $event);
+      const { result } = $event;
+      this.lng = result.center[0];
+      this.lat = result.center[1];
+      geocoder.clear();
+      this.crearMarcador(this.lng, this.lat);
+    });
+
+    return geocoder;
+  }
+
+  crearMarcador(lng: number, lat: number) {
+    const popup = new Mapboxgl.Popup().setHTML(
+      "<h3 style='text-align:center'>Ubicación</h3><p>En esta ubicación se perdió mi mascota</p>"
+    );
+    const marker = new Mapboxgl.Marker({
+      draggable: true,
+    })
+      .setLngLat([lng, lat])
+      .setPopup(popup)
+      .addTo(this.mapa);
+
+    marker.on("dragend", () => {
+      console.log(marker.getLngLat());
     });
   }
 
@@ -34,6 +97,7 @@ class ReportarMascota extends HTMLElement {
             }
             .titulo{
               margin-top:33px;
+              margin-bottom:30px;
               font-family: 'Poppins';
               font-style: normal;
               font-weight: 700;
@@ -41,24 +105,18 @@ class ReportarMascota extends HTMLElement {
               line-height: 60px;
               color: #000000;
             }
-            .instrucciones{
-              margin-top:50px;
-              font-family: 'Poppins';
-              font-style: normal;
-              font-weight: 500;
-              font-size: 16px;
-              line-height: 24px;
-              text-align: center;
-              text-transform: uppercase;
-              color: #000000;
+
+            /*FOTO MASCOTA*/
+            .foto-mascota{
+              margin-top:36px;
             }
-            .boton-dar-ubicacion{
-              margin-top:22px;
-              width:100%;
-              height: 50px;
-              border:none;
-              background: #FF9DF5;
-              border-radius: 4px;
+            .foto-mascota__imagen{
+              height: 142px;
+              width: 333px;
+              margin-bottom: 18px;
+              border: solid 1px;
+            }
+            .boton-texto{
               font-family: 'Poppins';
               font-style: normal;
               font-weight: 700;
@@ -66,23 +124,90 @@ class ReportarMascota extends HTMLElement {
               line-height: 24px;
               text-align: center;
               color: #000000;
+              border: none;
+              width: 100%;
+              height: 50px;
             }
-            .search-form {
-              background-color: coral;
-              padding: 10px;
+            .foto-mascota__boton{
+              background: #97EA9F;
+              border-radius: 4px;
             }
-           
+
+            /*MAPA*/
+            .mapa{
+              width: 100%;
+              height: 40vh;
+              margin-top:20px;
+              margin-bottom: 20px;
+            }
+
+            /*BUSCADOR*/
+            .input-search-ubicacion{
+              width:100%;
+            }
+            .input-search-ubicacion__label{
+              font-family: 'Poppins';
+              font-style: normal;
+              font-weight: 500;
+              font-size: 16px;
+              line-height: 24px;
+              text-transform: uppercase;
+              color: #000000;
+              margin-bottom:5px;
+            }
+
+            .mapboxgl-popup{
+              max-width:200px;
+            }
+            #geocoder{
+              width:100%;
+            }
+          .input-search-ubicacion__instrucciones{
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 24px;
+            text-transform: uppercase;
+            color: #000000;
+            margin-top: 18px;
+            margin-bottom:36px;
+          }
+          .boton-reportar{
+            background: #FF9DF5;
+            border-radius: 4px;
+          }  
+          .boton-cancelar{
+            background: #CDCDCD;
+            border-radius: 4px;
+            margin-top: 18px;
+            margin-bottom: 91px;
+          }  
+       
             
           
         `;
     div.innerHTML = `
         <div class="contenedor">
           <h1 class="titulo">Reportar mascota perdida</h1>
-          <form class="search-form">
-            <input name="q" type="search" />
-            <button>Buscar</button>
-          </form>
-          <div id="map" style="width: 100%; height: 50vh; background: #FF9DF5"></div>
+          <div class="form-floating mb-3">
+              <input type="text" class="form-control input-nombre-mascota" id="nombre" placeholder="nombre de tu mascota perdida">
+              <label for="nombre">NOMBRE</label>
+          </div>
+          <div class="foto-mascota">
+            <div class="foto-mascota__imagen"></div>
+            <button class="foto-mascota__boton boton-texto">agregar/modificar foto</button>
+          </div>
+          <div id="map" class="mapa"></div>
+          <div class="input-search-ubicacion">
+            <div>
+              <label class="input-search-ubicacion__label">Ubicación</label>
+              <div id="geocoder"></div>
+              <p class="input-search-ubicacion__instrucciones">Buscá un punto de referencia para reportar a tu mascota. Puede ser una dirección, un barrio o una ciudad.</p>
+            </div>
+          </div>
+          <button class="boton-reportar boton-texto">Reportar como perdido</button>
+          <button class="boton-cancelar boton-texto">Cancelar</button>
         </div>
         `;
     this.appendChild(style);

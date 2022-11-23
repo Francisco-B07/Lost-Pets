@@ -1,11 +1,8 @@
 import * as express from "express";
-import { Auth } from "./models";
+import { Auth, User, Pet } from "./models/index";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import * as path from "path";
-// import { createProduct } from "./controllers/users-controller";
-import { User } from "./models/users";
-import { Pets } from "./models/pets";
 import { sequelize } from "./models/conn";
 import { index } from "./lib/algolia";
 
@@ -43,11 +40,11 @@ app.post("/auth", async (req, res) => {
     },
   });
   const [auth, authCreated] = await Auth.findOrCreate({
-    where: { user_id: user.get("id") },
+    where: { userId: user.get("id") },
     defaults: {
       email,
       password: getSHA256ofString(password),
-      user_id: user.get("id"),
+      userId: user.get("id"),
     },
   });
 
@@ -60,7 +57,7 @@ app.post("/auth/token", async (req, res) => {
   const auth = await Auth.findOne({
     where: { email, password: getSHA256ofString(password) },
   });
-  const token = jwt.sign({ id: auth.get("user_id") }, SECRET);
+  const token = jwt.sign({ id: auth.get("userId") }, SECRET);
   if (auth) {
     res.json({ token });
   } else {
@@ -97,9 +94,12 @@ app.get("/me", authMiddleware, async (req, res) => {
 });
 
 // -------------- CREAR PET --------------
-app.post("/pets", async (req, res) => {
-  const { name, lat, lng } = req.body;
-  const newPet = await Pets.create(req.body);
+app.post("/pets", authMiddleware, async (req, res) => {
+  // const { name, lat, lng } = req.body;
+  const newPet = await Pet.create({
+    ...req.body,
+    userId: req._user.id,
+  });
   const algoliaRes = await index.saveObject({
     name: newPet.get("name"),
     _geoloc: {
@@ -113,13 +113,22 @@ app.post("/pets", async (req, res) => {
 
 // -------------- OBTENER TODAS LAS MASCOTAS --------------
 app.get("/pets", async (req, res) => {
-  const allPets = await Pets.findAll();
+  const allPets = await Pet.findAll();
+  res.json(allPets);
+});
+// -------------- OBTENER TODAS LAS MASCOTAS DE UN USUARIO--------------
+app.get("/me/pets", authMiddleware, async (req, res) => {
+  const allPets = await Pet.findAll({
+    where: {
+      userId: req._user.id,
+    },
+  });
   res.json(allPets);
 });
 
 // -------------- OBTENER UNA MASCOTA --------------
 app.get("/pets/:id", async (req, res) => {
-  const pet = await Pets.findByPk(req.params.id);
+  const pet = await Pet.findByPk(req.params.id);
   res.json(pet);
 });
 
@@ -128,7 +137,7 @@ app.get("/pets-cerca-de", async (req, res) => {
   const { lat, lng } = req.query;
   const { hits } = await index.search("", {
     aroundLatLng: [lat, lng].join(","),
-    aroundRadius: 20000,
+    aroundRadius: 10000,
   });
   res.json(hits);
 });
@@ -155,7 +164,7 @@ function bodyToIndex(body, id?) {
 }
 
 app.put("/pets/:id", async (req, res) => {
-  const pet = await Pets.update(req.body, {
+  const pet = await Pet.update(req.body, {
     where: {
       id: req.params.id,
     },

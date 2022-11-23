@@ -13,6 +13,7 @@
     "sync": "ts-node ./be-src/sync.ts"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@popperjs/core": "^2.11.6",
     "@vaadin/router": "^1.7.4",
     "algoliasearch": "^4.14.2",

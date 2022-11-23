@@ -3,10 +3,35 @@ import { Router } from "@vaadin/router";
 
 class Home extends HTMLElement {
   shadow: ShadowRoot;
+  lat: number;
+  lng: number;
   connectedCallback() {
+    const cs = state.getState();
     this.shadow = this.attachShadow({ mode: "open" });
+    var style2 = document.createElement("style");
+    style2.textContent = `
+    .instrucciones{
+      display:none;
+
+    }
+    .boton-dar-ubicacion{
+     display:none;
+    }
+    
+    `;
 
     this.render();
+
+    const botonDarUbicacion = this.shadow.querySelector(".boton-dar-ubicacion");
+    botonDarUbicacion.addEventListener("click", () => {
+      navigator.geolocation.getCurrentPosition((position) => {
+        state.setLat(position.coords.latitude);
+        state.setLng(position.coords.longitude);
+        state.buscarPetsCerca(() => {
+          this.shadow.appendChild(style2);
+        });
+      });
+    });
   }
   render() {
     const div = document.createElement("div");
