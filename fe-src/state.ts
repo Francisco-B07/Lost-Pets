@@ -106,6 +106,11 @@ const state = {
     cs.reporteInfo = reporteInfo;
     this.setState(cs);
   },
+  setReporteUserId(reporteUserId: string) {
+    const cs = this.getState();
+    cs.reporteUserId = reporteUserId;
+    this.setState(cs);
+  },
   setPetId(petId: string) {
     const cs = this.getState();
     cs.petId = petId;
@@ -261,6 +266,7 @@ const state = {
         reporteTelefono: cs.reporteTelefono,
         reporteInfo: cs.reporteInfo,
         petId: cs.petId,
+        userId: cs.reporteUserId,
       }),
     })
       .then((res) => {

@@ -7,10 +7,12 @@ export function initCardPet() {
     nombre: string;
     ubicacion: string;
     petId: string;
+    userId: string;
     connectedCallback() {
       this.nombre = this.getAttribute("name");
       this.ubicacion = this.getAttribute("ubicacion");
       this.petId = this.getAttribute("objectID");
+      this.userId = this.getAttribute("userId");
       const cs = state.getState();
 
       this.render();

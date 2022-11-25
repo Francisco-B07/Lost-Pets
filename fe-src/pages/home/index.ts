@@ -49,6 +49,8 @@ class Home extends HTMLElement {
           } else {
             for (let index = 0; index < cs.petsCerca.length; index++) {
               const element = cs.petsCerca[index];
+              console.log(element);
+
               const card = document.createElement(
                 "card-pet-component"
               ) as HTMLElement;
@@ -56,6 +58,7 @@ class Home extends HTMLElement {
               card.setAttribute("name", element.name);
               card.setAttribute("ubicacion", element.ubicacion);
               card.setAttribute("objectID", element.objectID);
+              card.setAttribute("userId", element.userId);
               card.classList.add("card-pet");
 
               this.shadow.appendChild(card);

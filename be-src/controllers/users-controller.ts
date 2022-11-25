@@ -3,6 +3,9 @@ import * as jwt from "jsonwebtoken";
 import { SECRET } from "../controllers/auth-controller";
 import { index } from "../lib/algolia";
 import { cloudinary } from "../lib/cloudinary";
+import * as sgMail from "@sendgrid/mail";
+
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 export function authMiddleware(req, res, next) {
   const token = req.headers.authorization.split(" ")[1];
@@ -44,6 +47,7 @@ export async function crearPet(userId, petData) {
         lng: newPet.get("lng"),
       },
       objectID: newPet.get("id"),
+      userId: userId,
     });
     return newPet;
   }
@@ -107,9 +111,17 @@ export async function updatePet(petData, petId) {
   }
 }
 
+// -------------------------------------------------------------------
+
+async function obtenerEmailTo(userId) {
+  const user = await User.findByPk(userId);
+  const email = user.get("email");
+  return email;
+}
+
 export async function crearReporte(reporteData) {
-  const { reporteNombre, reporteTelefono, reporteInfo, petId } = reporteData;
-  console.log("reporteData", reporteData);
+  const { reporteNombre, reporteTelefono, reporteInfo, petId, userId } =
+    reporteData;
 
   if (petId) {
     const newReport = await Reporte.create({
@@ -120,6 +132,32 @@ export async function crearReporte(reporteData) {
     }).catch((e) => {
       console.log("ERROR", e);
     });
+
+    const email = await obtenerEmailTo(userId);
+
+    const msg = {
+      to: email as string,
+      from: "franciscojburgoa@gmail.com",
+      subject: "Vieron tu mascota",
+      text: reporteInfo,
+      html: `
+      <p><b>Mi nombre es: </b> ${reporteNombre}</p>
+      <br>
+      <p>${reporteInfo}</p>
+      <br>
+      <p><b>Mi telefono es: </b> ${reporteTelefono}</p>
+      <p>Saludos ${reporteNombre}.</p>
+      `,
+    };
+
+    try {
+      console.log("entre");
+
+      await sgMail.send(msg);
+      console.log("termino", msg);
+    } catch (err) {
+      console.log(err.code, err.message);
+    }
 
     return newReport;
   } else {
