@@ -22,8 +22,13 @@ class Home extends HTMLElement {
     margin: 70px 30px;
     text-align:center;
    }
-    
-
+   @media (min-width: 800px){
+    .titulo{
+      margin-top:50px;
+      font-size: 50px;
+      text-align:center;
+    }
+  }
     
     `;
 
@@ -68,6 +73,12 @@ class Home extends HTMLElement {
             .contenedor{
               padding: 0px 20px
             }
+            @media (min-width: 800px){
+              .contenedor{
+                width: 40vw;
+                margin-left:30vw;
+              }
+            }
             .titulo{
               margin-top:33px;
               font-family: 'Poppins';
@@ -76,6 +87,13 @@ class Home extends HTMLElement {
               font-size: 40px;
               line-height: 60px;
               color: #000000;
+            }
+            @media (min-width: 800px){
+              .titulo{
+                margin-top:50px;
+                font-size: 50px;
+                text-align:center;
+              }
             }
             .instrucciones{
               margin-top:50px;
@@ -102,6 +120,7 @@ class Home extends HTMLElement {
               line-height: 24px;
               text-align: center;
               color: #000000;
+              cursor:pointer;
             }
         `;
     div.innerHTML = `

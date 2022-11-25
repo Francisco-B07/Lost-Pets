@@ -11,13 +11,29 @@ export function initHeader() {
       this.render();
 
       const buttonNavbarTogglerEl = document.querySelector(".navbar-toggler");
-      const buttonCerrarSesion = document.querySelector(".cerrar-sesion");
+      const buttonCerrarSesion = document.querySelector(
+        ".cerrar-sesion-collapse"
+      );
+      const buttonCerrarSesionNavbar = document.querySelector(
+        ".link-cerrar-sesion"
+      );
+
       const linkMisDatosEl = document.querySelector(".mis-datos");
+      const linkMisDatosNavbar = document.querySelector(".link-mis-datos");
+
       const linkMascotasReportadasEl = document.querySelector(
         ".mascotas-reportadas"
       );
+      const linkMascotasReportadasNavbar = document.querySelector(
+        ".link-mascotas-reportadas"
+      );
+
       const linkReportarMascotasEl =
         document.querySelector(".reportar-mascotas");
+      const linkReportarMascotasNavbar = document.querySelector(
+        ".link-reportar-mascotas"
+      );
+
       const navbarCollapseEl = document.querySelector(
         ".navbar-collapse"
       ) as HTMLElement;
@@ -31,8 +47,10 @@ export function initHeader() {
         }
       });
 
+      // -------------------- IR A MIS DATOS --------------------
       linkMisDatosEl.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
+        state.setRuta("mis-datos");
 
         if (cs.token != "") {
           Router.go("/mis-datos");
@@ -40,15 +58,40 @@ export function initHeader() {
           Router.go("/ingresar");
         }
       });
+      linkMisDatosNavbar.addEventListener("click", () => {
+        state.setRuta("mis-datos");
+
+        if (cs.token != "") {
+          Router.go("/mis-datos");
+        } else {
+          Router.go("/ingresar");
+        }
+      });
+
+      // -------------------- IR A MASCOTAS REPORTADAS --------------------
       linkMascotasReportadasEl.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
+        state.setRuta("mis-mascotas-reportadas");
         if (cs.token != "") {
           Router.go("/mis-mascotas-reportadas");
         } else {
           Router.go("/ingresar");
         }
       });
+      linkMascotasReportadasNavbar.addEventListener("click", () => {
+        state.setRuta("mis-mascotas-reportadas");
+
+        if (cs.token != "") {
+          Router.go("/mis-mascotas-reportadas");
+        } else {
+          Router.go("/ingresar");
+        }
+      });
+
+      // -------------------- IR A REPORTAR MASCOTA --------------------
       linkReportarMascotasEl.addEventListener("click", () => {
+        state.setRuta("reportar-mascota");
+
         navbarCollapseEl.style.display = "none";
         if (cs.token != "") {
           Router.go("/reportar-mascota");
@@ -56,14 +99,29 @@ export function initHeader() {
           Router.go("/ingresar");
         }
       });
+      linkReportarMascotasNavbar.addEventListener("click", () => {
+        state.setRuta("reportar-mascota");
+
+        if (cs.token != "") {
+          Router.go("/reportar-mascota");
+        } else {
+          Router.go("/ingresar");
+        }
+      });
+
+      // -------------------- CERRAR SESION --------------------
       buttonCerrarSesion.addEventListener("click", () => {
+        navbarCollapseEl.style.display = "none";
+        state.setToken("");
+      });
+      buttonCerrarSesionNavbar.addEventListener("click", () => {
         state.setToken("");
       });
     }
 
     render() {
       //   const div = document.createElement("div");
-
+      const cs = state.getState();
       var style = document.createElement("style");
       style.textContent = `
               .navbar{
@@ -77,6 +135,34 @@ export function initHeader() {
                 width:100%;
                 padding: 8px 20px ;
               }
+              @media (min-width: 800px){
+                .logo{
+                  width: 60px;
+                  height: auto;
+                  margin: 5px 100px 5px 40px;
+                }
+              }
+              @media (min-width: 800px){
+                .navbar-toggler{
+                  display: none;
+                }
+              }
+              .navbar-links{
+                width:100%;
+              }
+              @media (max-width: 800px){
+                .navbar-links{
+                  display: none;
+                }
+              }
+              .navbar-links__listado{
+                margin:0;
+                padding: 5px 30px;
+              }
+              .nav-item{
+                list-style:none;
+                margin: auto 0;
+              }
               .collapse{
                 background: #8AF1FF !important;
                 height: 91vh;
@@ -85,8 +171,14 @@ export function initHeader() {
                 width: 100vw;
                 z-index: 5;
               }
+              @media (min-width: 800px){
+                #navbarNavDropdown{
+                  background: red !important;
+                  display: none !important;
+                }
+              }
               .navbar-nav{
-                margin-top: 90px;
+                margin-top: 40px;
                 height: 60vh;
                 
               }
@@ -98,6 +190,62 @@ export function initHeader() {
                 line-height: 36px;
                 color: #000000;
                 text-align: center;
+              }
+            
+              @media (min-width: 800px){
+                .nav-link{
+                  font-size: 20px;
+                  line-height: 26px;
+                  cursor: pointer;
+
+                }
+                .nav-link:hover{
+                  font-size: 21px;
+                  color: #3377db;
+
+                }
+              }
+              .contenedor-user{
+                margin-top: 60px;
+              }
+              .user{
+                font-family: 'Poppins';
+                font-style: normal;
+                font-weight: 400;
+                font-size: 24px;
+                line-height: 36px;
+                text-align: center;
+                color: #000000;
+              }
+              @media (min-width: 800px){
+                .user{
+                  font-size: 18px;
+                  line-height: 26px;
+                  margin:0px;
+                }
+              }
+              .cerrar-sesion{
+                font-family: 'Poppins';
+                font-style: normal;
+                font-weight: 500;
+                font-size: 16px;
+                line-height: 24px;
+                text-align: center;
+                text-decoration-line: underline;
+                text-transform: uppercase;
+                color: #C6558B;
+              }
+              
+              @media (min-width: 800px){
+                .cerrar-sesion{
+                  margin: 0;
+                  font-size: 14px;
+                  cursor: pointer;
+                }
+                .cerrar-sesion:hover{
+                  font-size: 15px;
+                }
+
               }
               
              `;
@@ -112,11 +260,29 @@ export function initHeader() {
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
+              <div class="navbar-links ">
+                <ul class="navbar-links__listado d-flex align-items-center justify-content-around">
+                  <li class="nav-item link-mis-datos">
+                    <a class="nav-link ">Mis datos</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link  link-mascotas-reportadas">Mis mascotas <br> reportadas</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link  link-reportar-mascotas">Reportar <br> mascotas</a>
+                  </li>
+                  <div class="d-flex flex-column justify-content-center">
+                    <p class="user">${cs.email}</p>
+                    <p class="cerrar-sesion link-cerrar-sesion">Cerrar sesión</p>
+                  </div>
+                </ul>
+
+              </div>
               </div>
               <div class=" navbar-collapse collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav d-flex flex-column align-items-center justify-content-evenly">
                   <li class="nav-item mis-datos">
-                    <a class="nav-link active" aria-current="page">Mis datos</a>
+                    <a class="nav-link" aria-current="page">Mis datos</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link mascotas-reportadas">Mis mascotas <br> reportadas</a>
@@ -124,11 +290,12 @@ export function initHeader() {
                   <li class="nav-item">
                     <a class="nav-link reportar-mascotas">Reportar <br> mascotas</a>
                   </li>
-                  <li class="nav-item">
-                    <button class="cerrar-sesion">Cerrar sesión</button>
-                  </li>
                   
-                </ul>
+                  </ul>
+                  <div class="nav-item contenedor-user">
+                    <p class="user">${cs.email}</p>
+                    <p class="cerrar-sesion cerrar-sesion-collapse">Cerrar sesión</p>
+                  </div>
               </div>
             </div>
           </nav>

@@ -34,6 +34,13 @@ class Ingresar extends HTMLElement {
 
     var style = document.createElement("style");
     style.textContent = `
+       
+            @media (min-width: 800px){
+              .container{
+                width: 40vw !important;
+                margin-left:30vw;
+              }
+            }
             .titulo{
               font-family: 'Poppins';
               font-style: normal;
@@ -44,6 +51,13 @@ class Ingresar extends HTMLElement {
               margin-top: 44px;
               text-align: center;
               margin-bottom: 44px;
+            }
+            @media (min-width: 800px){
+              .titulo{
+                margin-top:50px;
+                font-size: 50px;
+                text-align:center;
+              }
             }
             .btn{
               background: #FF9DF5 !important;

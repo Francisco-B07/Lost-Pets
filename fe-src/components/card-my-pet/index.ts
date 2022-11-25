@@ -1,49 +1,29 @@
 import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
-export function initCardPet() {
-  class CardPet extends HTMLElement {
+export function initCardMyPet() {
+  const pencil = require("../../img/pencil.svg");
+  class CardMyPet extends HTMLElement {
     // shadow: ShadowRoot;
     nombre: string;
     ubicacion: string;
     petId: string;
+
     connectedCallback() {
       this.nombre = this.getAttribute("name");
       this.ubicacion = this.getAttribute("ubicacion");
       this.petId = this.getAttribute("objectID");
       const cs = state.getState();
-
       this.render();
-
-      const reportarInformacion = this.querySelector(".reportar-informacion");
-
-      const botonCruz = this.querySelector(".btn-close");
-      const modal = this.querySelector(".modal") as HTMLElement;
 
       const imagenEl = this.querySelector(".card__imagen-pet");
       const imagen = imagenEl as any;
       imagen.src = this.getAttribute("src");
 
-      const formulario = this.querySelector(".formulario") as any;
-      const botonEnviar = this.querySelector(".enviar-reporte");
-
-      modal.style.display = "none";
-      reportarInformacion.addEventListener("click", () => {
-        modal.style.display = "initial";
-      });
-
-      botonCruz.addEventListener("click", () => {
-        modal.style.display = "none";
-      });
-
-      botonEnviar.addEventListener("click", () => {
-        state.setReporteNombre(formulario.nombre.value);
-        state.setReporteTelefono(formulario.telefono.value);
-        state.setReporteInfo(formulario.informacion.value);
-        state.setPetId(this.petId);
-        state.reportarPetVista(() => {
-          formulario.reset();
-          modal.style.display = "none";
+      const botonEditar = this.querySelector(".editar");
+      botonEditar.addEventListener("click", () => {
+        state.buscarPetAEditar(this.petId, () => {
+          Router.go("/editar-mascota");
         });
       });
     }
@@ -163,37 +143,8 @@ export function initCardPet() {
                 <h1 class="card__nombre-pet">${this.nombre} </h1>
                 <p class="card__ubicacion-pet">${this.ubicacion} </p>
               </div>  
-              <p class="reportar-informacion">REPORTAR <br> INFORMACIÓN</p>
-
-              <!-- Modal -->
-              <div class="modal">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      
-                      <h5 class="modal-title titulo">Reportar info de ${this.nombre}</h5>
-                      <form class="formulario">
-                        <div class="form-floating mb-3">
-                          <input type="email" class="form-control" id="nombre" placeholder="name">
-                          <label for="nombre">TU NOMBRE</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                          <input type="email" class="form-control" id="telefono" placeholder="26455555555">
-                          <label for="telefono">TU TELÉFONO</label>
-                        </div>
-                        <label for="informacion">
-                          <p>DONDE LO VISTE?</p>
-                          <textarea class="form-control informacion__textarea" name="informacion" id="informacion"></textarea>
-                        </label>
-                      </form>
-                      <button class="enviar-reporte">Enviar</button>
-                  </div>
-                </div>
-              </div>
+              <img class="editar" src="${pencil}"  alt=""> 
             </div>
-
-
           </div>
 
 
@@ -201,5 +152,5 @@ export function initCardPet() {
       this.appendChild(style);
     }
   }
-  customElements.define("card-pet-component", CardPet);
+  customElements.define("card-my-pet-component", CardMyPet);
 }

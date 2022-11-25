@@ -13,10 +13,13 @@ const state = {
     namePet: "",
     ubicacion: "",
     petsCerca: {},
+    misPets: {},
+    petAEditar: {},
     reporteNombre: "",
     reporteTelefono: "",
     reporteInfo: "",
     petId: 0,
+    ruta: "",
   },
 
   listeners: [],
@@ -28,6 +31,11 @@ const state = {
     }
   },
 
+  setRuta(ruta: string) {
+    const cs = this.getState();
+    cs.ruta = ruta;
+    this.setState(cs);
+  },
   setEmail(email: string) {
     const cs = this.getState();
     cs.email = email;
@@ -71,6 +79,16 @@ const state = {
   setPetsCerca(petsCerca: any) {
     const cs = this.getState();
     cs.petsCerca = petsCerca;
+    this.setState(cs);
+  },
+  setMisPets(misPets: any) {
+    const cs = this.getState();
+    cs.misPets = misPets;
+    this.setState(cs);
+  },
+  setPetAEditar(petAEditar: any) {
+    const cs = this.getState();
+    cs.petAEditar = petAEditar;
     this.setState(cs);
   },
   setReporteNombre(reporteNombre: string) {
@@ -134,11 +152,32 @@ const state = {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
-
         callback();
       });
   },
+
+  editarUser(password, callback) {
+    const cs = this.getState();
+
+    fetch(API_BASE_URL + "/user", {
+      method: "put",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        email: cs.email,
+        fullName: cs.fullName,
+        password: password,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        callback();
+      });
+  },
+
   signin(password, callback) {
     const cs = this.getState();
 
@@ -163,7 +202,6 @@ const state = {
   },
   reportarPet(imageDataURL: string, callback) {
     const cs = this.getState();
-    console.log(cs.token);
 
     fetch(API_BASE_URL + "/pets", {
       method: "post",
@@ -183,8 +221,30 @@ const state = {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        callback();
+      });
+  },
+  editarPetPerdida(imageDataURL: string, callback) {
+    const cs = this.getState();
 
+    fetch(API_BASE_URL + "/pets/" + cs.petAEditar.id, {
+      method: "put",
+      headers: {
+        "content-type": "application/json",
+        Authorization: "bearer " + cs.token,
+      },
+      body: JSON.stringify({
+        name: cs.namePet,
+        lat: cs.lat,
+        lng: cs.lng,
+        ubicacion: cs.ubicacion,
+        imageDataURL: imageDataURL,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
         callback();
       });
   },
@@ -207,8 +267,6 @@ const state = {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
-
         callback();
       });
   },
@@ -228,6 +286,45 @@ const state = {
         console.log(e);
       });
   },
+  buscarMisPets(callback) {
+    const cs = this.getState();
+
+    fetch(API_BASE_URL + "/me/pets", {
+      headers: {
+        Authorization: "bearer " + cs.token,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        this.setMisPets(data);
+        callback();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  },
+  buscarPetAEditar(petId, callback) {
+    const cs = this.getState();
+
+    fetch(API_BASE_URL + "/pets/" + petId, {
+      headers: {
+        Authorization: "bearer " + cs.token,
+      },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        this.setPetAEditar(data);
+
+        callback();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  },
 
   setState(newState) {
     this.data = newState;
@@ -235,7 +332,6 @@ const state = {
       cb(newState);
     }
     localStorage.setItem("state", JSON.stringify(newState));
-    console.log("El state cambio: ", newState);
   },
 
   subscribe(callback: (any) => any) {

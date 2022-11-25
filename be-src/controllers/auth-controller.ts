@@ -33,6 +33,52 @@ export async function signupUser(userData) {
     throw "error, faltan datos para crear el usuario";
   }
 }
+// ---------------------- EDITAR USER -----------------------
+
+export async function editarUser(userData) {
+  const { email, fullName, password } = userData;
+  if (email && fullName && password) {
+    const user = await User.update(
+      {
+        fullName,
+      },
+      {
+        where: {
+          email,
+        },
+      }
+    );
+
+    const auth = await Auth.update(
+      {
+        password: getSHA256ofString(password),
+      },
+      {
+        where: {
+          email,
+        },
+      }
+    );
+    return user;
+  } else {
+    if (email && fullName) {
+      const user = await User.update(
+        {
+          fullName,
+        },
+        {
+          where: {
+            email,
+          },
+        }
+      );
+
+      return user;
+    } else {
+      throw "error, faltan datos para crear el usuario";
+    }
+  }
+}
 
 export async function signinUser(userData) {
   const { email, password } = userData;

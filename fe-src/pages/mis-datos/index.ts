@@ -9,6 +9,10 @@ class MisDatos extends HTMLElement {
     this.render();
 
     const inputFullNameEl = this.shadow.querySelector(".fullName") as any;
+    if (cs.fullName && cs.token) {
+      inputFullNameEl.value = cs.fullName;
+    }
+
     const inputPasswordEl = this.shadow.querySelector(".password") as any;
     const inputRepeatPasswordEl = this.shadow.querySelector(
       ".repeatPassword"
@@ -28,7 +32,14 @@ class MisDatos extends HTMLElement {
           alert("Debe completar todos los campos para continuar");
         } else {
           if (cs.token != "") {
-            // AGREGAR EL CODIGO PARA EDITAR USUARIO
+            state.editarUser(inputPasswordEl.value, (err) => {
+              if (err) {
+                console.error("Hubo un error al actualizar el usuario");
+              } else {
+                alert("Cambios guardados con exito");
+                Router.go("/");
+              }
+            });
           } else {
             if (inputPasswordEl.value != inputRepeatPasswordEl.value) {
               alert("Las contraseñas ingresadas no coinciden");
@@ -64,6 +75,13 @@ class MisDatos extends HTMLElement {
               margin-top: 44px;
               text-align: center;
               margin-bottom: 44px;
+            }
+            @media (min-width: 800px){
+              .titulo{
+                margin-top:50px;
+                font-size: 50px;
+                text-align:center;
+              }
             }
             .btn{
               background: #FF9DF5 !important;

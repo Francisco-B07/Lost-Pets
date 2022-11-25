@@ -2,6 +2,7 @@ import * as express from "express";
 import * as path from "path";
 import {
   checkUserExist,
+  editarUser,
   signinUser,
   signupUser,
 } from "./controllers/auth-controller";
@@ -43,6 +44,16 @@ app.post("/auth", async (req, res) => {
   }
   const newUser = await signupUser(req.body);
   res.json(newUser);
+});
+// -------------- EDITAR USUARIO --------------
+app.put("/user", async (req, res) => {
+  if (!req.body) {
+    res.status(400).json({
+      message: "me faltan datos en el body",
+    });
+  }
+  const user = await editarUser(req.body);
+  res.json(user);
 });
 
 // -------------- SIGNIN --------------

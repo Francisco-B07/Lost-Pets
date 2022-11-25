@@ -75,7 +75,6 @@ class ReportarMascota extends HTMLElement {
       mapboxgl: Mapboxgl,
     });
     geocoder.on("result", ($event) => {
-      // console.log("resultado", $event);
       const { result } = $event;
 
       this.lng = result.center[0];
@@ -99,9 +98,7 @@ class ReportarMascota extends HTMLElement {
       .setPopup(popup)
       .addTo(this.mapa);
 
-    marker.on("dragend", () => {
-      console.log(marker.getLngLat());
-    });
+    marker.on("dragend", () => {});
   }
 
   render() {
@@ -111,6 +108,12 @@ class ReportarMascota extends HTMLElement {
     style.textContent = `
             .contenedor{
               padding: 0px 20px
+            }
+            @media (min-width: 800px){
+              .contenedor{
+                width: 40vw !important;
+                margin-left:30vw;
+              }
             }
             .titulo{
               margin-top:33px;
@@ -122,7 +125,13 @@ class ReportarMascota extends HTMLElement {
               line-height: 60px;
               color: #000000;
             }
-
+            @media (min-width: 800px){
+              .titulo{
+                margin-top:50px;
+                font-size: 50px;
+                text-align:center;
+              }
+            }
             /*FOTO MASCOTA*/
             .foto-mascota{
               margin-top:36px;
@@ -171,6 +180,11 @@ class ReportarMascota extends HTMLElement {
             /*BUSCADOR*/
             .input-search-ubicacion{
               width:100%;
+            }
+            @media (min-width: 800px){
+              .mapboxgl-ctrl-geocoder{
+                width: 40vw !important;
+              }
             }
             .input-search-ubicacion__label{
               font-family: 'Poppins';

@@ -5,8 +5,32 @@ class MisMascotasReportadas extends HTMLElement {
   shadow: ShadowRoot;
   connectedCallback() {
     this.shadow = this.attachShadow({ mode: "open" });
+    const cs = state.getState();
 
     this.render();
+    state.buscarMisPets(() => {
+      if (cs.misPets.length == 0) {
+        const cartel = document.createElement("h2");
+        cartel.textContent = "NO HAS REPORTADO NINGUNA MASCOTA";
+        cartel.classList.add("cartel-no-hay-mascotas");
+        this.shadow.appendChild(cartel);
+      } else {
+        for (let index = 0; index < cs.misPets.length; index++) {
+          const element = cs.misPets[index];
+
+          const card = document.createElement(
+            "card-my-pet-component"
+          ) as HTMLElement;
+          card.setAttribute("src", element.imageURL);
+          card.setAttribute("name", element.name);
+          card.setAttribute("ubicacion", element.ubicacion);
+          card.setAttribute("objectID", element.id);
+          card.classList.add("card-pet");
+
+          this.shadow.appendChild(card);
+        }
+      }
+    });
   }
   render() {
     const div = document.createElement("div");
@@ -16,6 +40,12 @@ class MisMascotasReportadas extends HTMLElement {
             .contenedor{
               padding: 0px 20px
             }
+            @media (min-width: 800px){
+              .contenedor{
+                width: 40vw !important;
+                margin-left:30vw;
+              }
+            }
             .titulo{
               margin-top:33px;
               font-family: 'Poppins';
@@ -24,6 +54,13 @@ class MisMascotasReportadas extends HTMLElement {
               font-size: 40px;
               line-height: 60px;
               color: #000000;
+            }
+            @media (min-width: 800px){
+              .titulo{
+                margin-top:50px;
+                font-size: 50px;
+                text-align:center;
+              }
             }
             .instrucciones{
               margin-top:50px;
