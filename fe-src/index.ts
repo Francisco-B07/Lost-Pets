@@ -1,5 +1,6 @@
 // IMPORT DE COMPONENTES
 import { initHeader } from "./components/header";
+import { initCardPet } from "./components/card-pet";
 // IMPORT DE PAGES
 import "./pages/home/index";
 import "./pages/ingresar/index";
@@ -16,5 +17,6 @@ import { state } from "./state";
 (function () {
   state.init();
   initHeader();
+  initCardPet();
   const root = document.querySelector(".root")!;
 })();

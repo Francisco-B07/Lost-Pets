@@ -11,6 +11,12 @@ const state = {
     lng: 0,
     lat: 0,
     namePet: "",
+    ubicacion: "",
+    petsCerca: {},
+    reporteNombre: "",
+    reporteTelefono: "",
+    reporteInfo: "",
+    petId: 0,
   },
 
   listeners: [],
@@ -52,9 +58,39 @@ const state = {
     cs.lat = lat;
     this.setState(cs);
   },
+  setUbicacion(ubicacion: string) {
+    const cs = this.getState();
+    cs.ubicacion = ubicacion;
+    this.setState(cs);
+  },
   setNamePet(namePet: string) {
     const cs = this.getState();
     cs.namePet = namePet;
+    this.setState(cs);
+  },
+  setPetsCerca(petsCerca: any) {
+    const cs = this.getState();
+    cs.petsCerca = petsCerca;
+    this.setState(cs);
+  },
+  setReporteNombre(reporteNombre: string) {
+    const cs = this.getState();
+    cs.reporteNombre = reporteNombre;
+    this.setState(cs);
+  },
+  setReporteTelefono(reporteTelefono: string) {
+    const cs = this.getState();
+    cs.reporteTelefono = reporteTelefono;
+    this.setState(cs);
+  },
+  setReporteInfo(reporteInfo: string) {
+    const cs = this.getState();
+    cs.reporteInfo = reporteInfo;
+    this.setState(cs);
+  },
+  setPetId(petId: string) {
+    const cs = this.getState();
+    cs.petId = petId;
     this.setState(cs);
   },
 
@@ -125,18 +161,46 @@ const state = {
         callback();
       });
   },
-  reportarPet(callback) {
+  reportarPet(imageDataURL: string, callback) {
     const cs = this.getState();
+    console.log(cs.token);
 
     fetch(API_BASE_URL + "/pets", {
       method: "post",
       headers: {
         "content-type": "application/json",
+        Authorization: "bearer " + cs.token,
       },
       body: JSON.stringify({
         name: cs.namePet,
         lat: cs.lat,
         lng: cs.lng,
+        ubicacion: cs.ubicacion,
+        imageDataURL: imageDataURL,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        callback();
+      });
+  },
+  reportarPetVista(callback) {
+    const cs = this.getState();
+
+    fetch(API_BASE_URL + "/reporte", {
+      method: "post",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        reporteNombre: cs.reporteNombre,
+        reporteTelefono: cs.reporteTelefono,
+        reporteInfo: cs.reporteInfo,
+        petId: cs.petId,
       }),
     })
       .then((res) => {
@@ -156,7 +220,7 @@ const state = {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        this.setPetsCerca(data);
 
         callback();
       })

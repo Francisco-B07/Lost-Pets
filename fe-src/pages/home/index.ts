@@ -5,6 +5,7 @@ class Home extends HTMLElement {
   shadow: ShadowRoot;
   lat: number;
   lng: number;
+  pets: any;
   connectedCallback() {
     const cs = state.getState();
     this.shadow = this.attachShadow({ mode: "open" });
@@ -12,11 +13,17 @@ class Home extends HTMLElement {
     style2.textContent = `
     .instrucciones{
       display:none;
-
     }
     .boton-dar-ubicacion{
      display:none;
     }
+   .cartel-no-hay-mascotas{
+    color:red;
+    margin: 70px 30px;
+    text-align:center;
+   }
+    
+
     
     `;
 
@@ -24,11 +31,31 @@ class Home extends HTMLElement {
 
     const botonDarUbicacion = this.shadow.querySelector(".boton-dar-ubicacion");
     botonDarUbicacion.addEventListener("click", () => {
-      navigator.geolocation.getCurrentPosition((position) => {
+      navigator.geolocation.getCurrentPosition(async (position) => {
         state.setLat(position.coords.latitude);
         state.setLng(position.coords.longitude);
         state.buscarPetsCerca(() => {
           this.shadow.appendChild(style2);
+          if (cs.petsCerca.length == 0) {
+            const cartel = document.createElement("h2");
+            cartel.textContent = "NO HAY MASCOTAS PERDIDAS CERCA TUYO";
+            cartel.classList.add("cartel-no-hay-mascotas");
+            this.shadow.appendChild(cartel);
+          } else {
+            for (let index = 0; index < cs.petsCerca.length; index++) {
+              const element = cs.petsCerca[index];
+              const card = document.createElement(
+                "card-pet-component"
+              ) as HTMLElement;
+              card.setAttribute("src", element.imageURL);
+              card.setAttribute("name", element.name);
+              card.setAttribute("ubicacion", element.ubicacion);
+              card.setAttribute("objectID", element.objectID);
+              card.classList.add("card-pet");
+
+              this.shadow.appendChild(card);
+            }
+          }
         });
       });
     });
@@ -82,6 +109,7 @@ class Home extends HTMLElement {
           <h1 class="titulo">Mascotas perdidas cerca tuyo</h1>
           <p class="instrucciones">Para ver las mascotas reportadas cerca tuyo necesitamos permiso para conocer tu ubicación.</p>
           <button class="boton-dar-ubicacion">Dar mi ubicación</button>
+          
         </div>
         `;
     this.shadow.appendChild(style);

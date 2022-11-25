@@ -2,12 +2,14 @@ import { state } from "../../state";
 import { Router } from "@vaadin/router";
 import * as Mapboxgl from "mapbox-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import Dropzone from "dropzone";
 
 class ReportarMascota extends HTMLElement {
   // shadow: ShadowRoot;
   MAPBOX_TOKEN = process.env.MAPBOX_KEY;
   lng: number = -68.5292228;
   lat: number = -31.5346781;
+  ubicacion: string = "Casa Natal de Domingo Faustino Sarmiento";
   // mapboxClient = new MapboxClient(this.MAPBOX_TOKEN);
 
   mapa: Mapboxgl.Map;
@@ -16,8 +18,20 @@ class ReportarMascota extends HTMLElement {
 
     this.render();
     const inputEl = this.querySelector(".input-nombre-mascota");
+    const contenedorImagen = this.querySelector(".foto-mascota__imagen");
     const input = inputEl as any;
     const cs = state.getState();
+    let imageDataURL;
+
+    const myDropzone = new Dropzone(".foto-mascota__boton", {
+      url: "/falsa",
+      autoProcessQueue: false,
+      previewsContainer: contenedorImagen,
+    });
+    myDropzone.on("thumbnail", function (file) {
+      // usando este evento pueden acceder al dataURL directamente
+      imageDataURL = file.dataURL;
+    });
 
     const botonReportar = this.querySelector(".boton-reportar");
     const botonCancelar = this.querySelector(".boton-cancelar");
@@ -32,7 +46,8 @@ class ReportarMascota extends HTMLElement {
         state.setNamePet(input.value);
         state.setLng(this.lng);
         state.setLat(this.lat);
-        state.reportarPet(() => {
+        state.setUbicacion(this.ubicacion);
+        state.reportarPet(imageDataURL, () => {
           Router.go("/mis-mascotas-reportadas");
         });
       } else {
@@ -62,8 +77,10 @@ class ReportarMascota extends HTMLElement {
     geocoder.on("result", ($event) => {
       // console.log("resultado", $event);
       const { result } = $event;
+
       this.lng = result.center[0];
       this.lat = result.center[1];
+      this.ubicacion = result.text;
       geocoder.clear();
       this.crearMarcador(this.lng, this.lat);
     });
@@ -111,10 +128,20 @@ class ReportarMascota extends HTMLElement {
               margin-top:36px;
             }
             .foto-mascota__imagen{
-              height: 142px;
-              width: 333px;
+              max-height: 170px;
+
+              width: 100%;
               margin-bottom: 18px;
-              border: solid 1px;
+              
+            }
+            .dz-image img{
+              max-height: 170px;
+              width: 100%;
+              object-fit: cover;
+
+            }
+            .dz-details{
+              display: none;
             }
             .boton-texto{
               font-family: 'Poppins';
@@ -188,6 +215,8 @@ class ReportarMascota extends HTMLElement {
           
         `;
     div.innerHTML = `
+          
+
         <div class="contenedor">
           <h1 class="titulo">Reportar mascota perdida</h1>
           <div class="form-floating mb-3">
@@ -195,8 +224,8 @@ class ReportarMascota extends HTMLElement {
               <label for="nombre">NOMBRE</label>
           </div>
           <div class="foto-mascota">
-            <div class="foto-mascota__imagen"></div>
-            <button class="foto-mascota__boton boton-texto">agregar/modificar foto</button>
+            <div class="foto-mascota__imagen drpzone-previews"></div>
+            <button class="foto-mascota__boton boton-texto">Agregar foto</button>
           </div>
           <div id="map" class="mapa"></div>
           <div class="input-search-ubicacion">

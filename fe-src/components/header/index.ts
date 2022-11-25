@@ -11,6 +11,7 @@ export function initHeader() {
       this.render();
 
       const buttonNavbarTogglerEl = document.querySelector(".navbar-toggler");
+      const buttonCerrarSesion = document.querySelector(".cerrar-sesion");
       const linkMisDatosEl = document.querySelector(".mis-datos");
       const linkMascotasReportadasEl = document.querySelector(
         ".mascotas-reportadas"
@@ -54,6 +55,9 @@ export function initHeader() {
         } else {
           Router.go("/ingresar");
         }
+      });
+      buttonCerrarSesion.addEventListener("click", () => {
+        state.setToken("");
       });
     }
 
@@ -119,6 +123,9 @@ export function initHeader() {
                   </li>
                   <li class="nav-item">
                     <a class="nav-link reportar-mascotas">Reportar <br> mascotas</a>
+                  </li>
+                  <li class="nav-item">
+                    <button class="cerrar-sesion">Cerrar sesión</button>
                   </li>
                   
                 </ul>
