@@ -14,6 +14,7 @@ export function initCardPet() {
       this.petId = this.getAttribute("objectID");
       this.userId = this.getAttribute("userId");
       const cs = state.getState();
+      console.log("userrrr", this.userId);
 
       this.render();
 
@@ -43,6 +44,7 @@ export function initCardPet() {
         state.setReporteTelefono(formulario.telefono.value);
         state.setReporteInfo(formulario.informacion.value);
         state.setPetId(this.petId);
+        state.setReporteUserId(this.userId);
         state.reportarPetVista(() => {
           formulario.reset();
           modal.style.display = "none";

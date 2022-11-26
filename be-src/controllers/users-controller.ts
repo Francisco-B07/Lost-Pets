@@ -142,19 +142,17 @@ export async function crearReporte(reporteData) {
       text: reporteInfo,
       html: `
       <p><b>Mi nombre es: </b> ${reporteNombre}</p>
-      <br>
+     
+      <strong>VI TU MASCOTA</strong>
       <p>${reporteInfo}</p>
-      <br>
+     
       <p><b>Mi telefono es: </b> ${reporteTelefono}</p>
       <p>Saludos ${reporteNombre}.</p>
       `,
     };
 
     try {
-      console.log("entre");
-
       await sgMail.send(msg);
-      console.log("termino", msg);
     } catch (err) {
       console.log(err.code, err.message);
     }

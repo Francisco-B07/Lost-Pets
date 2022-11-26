@@ -13,10 +13,10 @@ export function initHeader() {
       const buttonNavbarTogglerEl = document.querySelector(".navbar-toggler");
       const buttonCerrarSesion = document.querySelector(
         ".cerrar-sesion-collapse"
-      );
+      ) as HTMLElement;
       const buttonCerrarSesionNavbar = document.querySelector(
         ".link-cerrar-sesion"
-      );
+      ) as HTMLElement;
 
       const linkMisDatosEl = document.querySelector(".mis-datos");
       const linkMisDatosNavbar = document.querySelector(".link-mis-datos");
@@ -37,6 +37,8 @@ export function initHeader() {
       const navbarCollapseEl = document.querySelector(
         ".navbar-collapse"
       ) as HTMLElement;
+
+      const usuario = document.querySelector(".usuario") as HTMLElement;
 
       navbarCollapseEl.style.display = "none";
       buttonNavbarTogglerEl.addEventListener("click", () => {
@@ -110,12 +112,22 @@ export function initHeader() {
       });
 
       // -------------------- CERRAR SESION --------------------
+      if (cs.token == "") {
+        buttonCerrarSesion.style.display = "none";
+        buttonCerrarSesionNavbar.style.display = "none";
+      } else {
+        buttonCerrarSesion.style.display = "initial";
+        buttonCerrarSesionNavbar.style.display = "initial";
+      }
+
       buttonCerrarSesion.addEventListener("click", () => {
         navbarCollapseEl.style.display = "none";
         state.setToken("");
+        state.setEmail("");
       });
       buttonCerrarSesionNavbar.addEventListener("click", () => {
         state.setToken("");
+        state.setEmail("");
       });
     }
 
@@ -271,7 +283,7 @@ export function initHeader() {
                   <li class="nav-item">
                     <a class="nav-link  link-reportar-mascotas">Reportar <br> mascotas</a>
                   </li>
-                  <div class="d-flex flex-column justify-content-center">
+                  <div class="d-flex flex-column justify-content-center usuario">
                     <p class="user">${cs.email}</p>
                     <p class="cerrar-sesion link-cerrar-sesion">Cerrar sesión</p>
                   </div>

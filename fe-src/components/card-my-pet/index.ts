@@ -125,6 +125,10 @@ export function initCardMyPet() {
         border:none;
         height:50px;
        }
+       .editar{
+        height: 24px;
+        width: 24px;
+       }
 
       `;
       this.innerHTML = `
