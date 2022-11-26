@@ -128,6 +128,7 @@ export function initCardMyPet() {
        .editar{
         height: 24px;
         width: 24px;
+        margin: auto 4px;
        }
 
       `;

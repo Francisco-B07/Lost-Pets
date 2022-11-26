@@ -49,7 +49,6 @@ class Home extends HTMLElement {
           } else {
             for (let index = 0; index < cs.petsCerca.length; index++) {
               const element = cs.petsCerca[index];
-              console.log(element);
 
               const card = document.createElement(
                 "card-pet-component"

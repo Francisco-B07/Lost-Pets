@@ -20,9 +20,6 @@ import {
 } from "./controllers/users-controller";
 import { sequelize } from "./models/conn";
 
-// -------------- SEQUELIZE --------------
-// sequelize.sync({ force: true }).then((res) => console.log(res));
-
 // -------------- CONSTANTES --------------
 const port = process.env.PORT || 3000;
 const staticDirPath = path.resolve(__dirname, "../dist");
@@ -136,7 +133,7 @@ app.get("/pets-cerca-de", async (req, res) => {
 
 // -------------- ACTUALIZAR MASCOTA --------------
 
-app.put("/pets/:id", async (req, res) => {
+app.put("/pets/:id", authMiddleware, async (req, res) => {
   const pet = await updatePet(req.body, req.params.id);
   if (pet) {
     res.json(pet);

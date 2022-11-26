@@ -116,7 +116,7 @@ export function initHeader() {
         buttonCerrarSesion.style.display = "none";
         buttonCerrarSesionNavbar.style.display = "none";
       } else {
-        buttonCerrarSesion.style.display = "initial";
+        buttonCerrarSesion.style.display = "inherit";
         buttonCerrarSesionNavbar.style.display = "initial";
       }
 

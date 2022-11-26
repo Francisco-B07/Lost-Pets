@@ -14,7 +14,6 @@ export function initCardPet() {
       this.petId = this.getAttribute("objectID");
       this.userId = this.getAttribute("userId");
       const cs = state.getState();
-      console.log("userrrr", this.userId);
 
       this.render();
 
