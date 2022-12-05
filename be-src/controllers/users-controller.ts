@@ -19,7 +19,8 @@ export function authMiddleware(req, res, next) {
 }
 
 export async function crearPet(userId, petData) {
-  const { name, lat, lng, imageDataURL, ubicacion } = petData;
+  const { name, lat, lng, imageDataURL, ubicacion, encontrado, eliminado } =
+    petData;
   if (!userId) {
     throw "userId es necesario";
   }
@@ -37,6 +38,8 @@ export async function crearPet(userId, petData) {
       ubicacion,
       imageURL: imagen.secure_url,
       userId: userId,
+      encontrado,
+      eliminado,
     });
     const algoliaRes = await index.saveObject({
       name: newPet.get("name"),
@@ -48,6 +51,8 @@ export async function crearPet(userId, petData) {
       },
       objectID: newPet.get("id"),
       userId: userId,
+      encontrado: newPet.get("encontrado"),
+      eliminado: newPet.get("eliminado"),
     });
     return newPet;
   }
@@ -66,11 +71,17 @@ function bodyToIndex(body, id?) {
   if (body.ubicacion) {
     respuesta.ubicacion = body.ubicacion;
   }
+  if (body.encontrado) {
+    respuesta.encontrado = body.encontrado;
+  }
+  if (body.eliminado) {
+    respuesta.eliminado = body.eliminado;
+  }
 
   if (body.lat && body.lng) {
     respuesta._geoloc = {
       lat: body.lat,
-      lng: body.lat,
+      lng: body.lng,
     };
   }
   if (id) {
@@ -80,7 +91,16 @@ function bodyToIndex(body, id?) {
 }
 
 export async function updatePet(petData, petId) {
-  const { name, lat, lng, imageDataURL, ubicacion } = petData;
+  const {
+    name,
+    lat,
+    lng,
+    imageDataURL,
+    ubicacion,
+    encontrado,
+    eliminado,
+    imageURL,
+  } = petData;
 
   if (imageDataURL) {
     const imagen = await cloudinary.uploader.upload(imageDataURL, {
@@ -88,6 +108,7 @@ export async function updatePet(petData, petId) {
       discard_original_filename: true,
       width: 1000,
     });
+
     const pet = await Pet.update(
       {
         name,
@@ -95,6 +116,8 @@ export async function updatePet(petData, petId) {
         lng,
         imageURL: imagen.secure_url,
         ubicacion,
+        encontrado,
+        eliminado,
       },
       {
         where: {
@@ -102,7 +125,28 @@ export async function updatePet(petData, petId) {
         },
       }
     );
+    const indexItem = bodyToIndex(petData, petId);
+    // console.log(indexItem);
 
+    const algoliaRes = await index.partialUpdateObject(indexItem);
+    return pet;
+  } else {
+    const pet = await Pet.update(
+      {
+        name,
+        lat,
+        lng,
+        imageURL: imageURL,
+        ubicacion,
+        encontrado,
+        eliminado,
+      },
+      {
+        where: {
+          id: petId,
+        },
+      }
+    );
     const indexItem = bodyToIndex(petData, petId);
     // console.log(indexItem);
 

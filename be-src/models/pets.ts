@@ -9,6 +9,8 @@ Pet.init(
     lng: DataTypes.FLOAT,
     imageURL: DataTypes.STRING,
     ubicacion: DataTypes.STRING,
+    encontrado: DataTypes.STRING,
+    eliminado: DataTypes.BOOLEAN,
   },
   { sequelize, modelName: "pet" }
 );

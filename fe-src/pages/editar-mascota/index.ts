@@ -13,6 +13,8 @@ class EditarMascota extends HTMLElement {
   lat: number = this.cs.petAEditar.lat;
   ubicacion: string = this.cs.petAEditar.ubicacion;
   src: string = this.cs.petAEditar.imageURL;
+  encontrado: string = this.cs.petAEditar.encontrado;
+  imageURL: string = this.cs.petAEditar.imageURL;
 
   connectedCallback() {
     // this.shadow = this.attachShadow({ mode: "open" });
@@ -22,7 +24,7 @@ class EditarMascota extends HTMLElement {
     const contenedorImagen = this.querySelector(".foto-mascota__imagen");
     const input = inputEl as any;
     const cs = state.getState();
-    let imageDataURL;
+    let imageDataURL = "";
     const botonEditar = this.querySelector(".foto-mascota__boton");
     botonEditar.addEventListener("click", () => {
       const imagenEl = this.querySelector(".imagen-mascota");
@@ -41,7 +43,10 @@ class EditarMascota extends HTMLElement {
     });
 
     const botonReportar = this.querySelector(".boton-reportar");
-    const botonCancelar = this.querySelector(".boton-cancelar");
+    const botonDespublicar = this.querySelector(".boton-despublicar");
+    const botonReportarComoEncontrado = this.querySelector(
+      ".boton-reportar-como-encontrado"
+    );
     let geocoder = document.getElementById("geocoder");
 
     this.mapa = this.initMap();
@@ -54,6 +59,10 @@ class EditarMascota extends HTMLElement {
         state.setLng(this.lng);
         state.setLat(this.lat);
         state.setUbicacion(this.ubicacion);
+        state.setEncontrado(this.encontrado);
+        state.setEliminar(false);
+        state.setImageURL(this.imageURL);
+
         state.editarPetPerdida(imageDataURL, () => {
           Router.go("/mis-mascotas-reportadas");
         });
@@ -61,8 +70,31 @@ class EditarMascota extends HTMLElement {
         alert("Debe ingresar un nombre para continuar");
       }
     });
-    botonCancelar.addEventListener("click", () => {
-      Router.go("/");
+    botonReportarComoEncontrado.addEventListener("click", () => {
+      state.setNamePet(input.value);
+      state.setLng(this.lng);
+      state.setLat(this.lat);
+      state.setUbicacion(this.ubicacion);
+      state.setEncontrado("ENCONTRADO");
+      state.setEliminar(false);
+      state.setImageURL(this.imageURL);
+
+      state.editarPetPerdida(imageDataURL, () => {
+        Router.go("/mis-mascotas-reportadas");
+      });
+    });
+    botonDespublicar.addEventListener("click", () => {
+      state.setNamePet(input.value);
+      state.setLng(this.lng);
+      state.setLat(this.lat);
+      state.setUbicacion(this.ubicacion);
+      state.setEncontrado(this.encontrado);
+      state.setEliminar(true);
+      state.setImageURL(this.imageURL);
+
+      state.editarPetPerdida(imageDataURL, () => {
+        Router.go("/mis-mascotas-reportadas");
+      });
     });
   }
 
@@ -226,11 +258,17 @@ class EditarMascota extends HTMLElement {
             background: #FF9DF5;
             border-radius: 4px;
           }  
-          .boton-cancelar{
-            background: #CDCDCD;
+          .boton-reportar-como-encontrado{
+            background: #97EA9F;
             border-radius: 4px;
             margin-top: 18px;
+          }
+          .boton-despublicar{
+            text-decoration-line: underline;
+            color: #FF3A3A;
+            margin-top: 48px;
             margin-bottom: 91px;
+            cursor:pointer;
           }  
         `;
     div.innerHTML = `
@@ -254,8 +292,9 @@ class EditarMascota extends HTMLElement {
               <p class="input-search-ubicacion__instrucciones">Buscá un punto de referencia para reportar a tu mascota. Puede ser una dirección, un barrio o una ciudad.</p>
             </div>
           </div>
-          <button class="boton-reportar boton-texto">Reportar como perdido</button>
-          <button class="boton-cancelar boton-texto">Cancelar</button>
+          <button class="boton-reportar boton-texto">Guardar</button>
+          <button class="boton-reportar-como-encontrado boton-texto">Reportar como encontrado</button>
+          <p class="boton-despublicar boton-texto">DESPUBLICAR</p>
      
         </div>
         `;

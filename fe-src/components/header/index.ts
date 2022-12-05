@@ -8,6 +8,7 @@ export function initHeader() {
     connectedCallback() {
       // this.shadow = this.attachShadow({ mode: "open" });
       const cs = state.getState();
+
       this.render();
 
       const buttonNavbarTogglerEl = document.querySelector(".navbar-toggler");
@@ -112,16 +113,8 @@ export function initHeader() {
       });
 
       // -------------------- CERRAR SESION --------------------
-      if (cs.token == "") {
-        buttonCerrarSesion.style.display = "none";
-        buttonCerrarSesionNavbar.style.display = "none";
-      } else {
-        buttonCerrarSesion.style.display = "inherit";
-        buttonCerrarSesionNavbar.style.display = "initial";
-      }
 
       buttonCerrarSesion.addEventListener("click", () => {
-        navbarCollapseEl.style.display = "none";
         state.setToken("");
         state.setEmail("");
       });
@@ -129,6 +122,25 @@ export function initHeader() {
         state.setToken("");
         state.setEmail("");
       });
+
+      state.subscribe(() => {
+        this.addEmail();
+      });
+    }
+
+    addEmail() {
+      const cs = state.getState();
+
+      const email = document.querySelector(".user");
+      const emailNavbar = document.querySelector(".userNavbar");
+
+      if (cs.token != "") {
+        email.textContent = cs.email;
+        emailNavbar.textContent = cs.email;
+      } else {
+        email.textContent = "";
+        emailNavbar.textContent = "";
+      }
     }
 
     render() {
@@ -220,7 +232,7 @@ export function initHeader() {
               .contenedor-user{
                 margin-top: 60px;
               }
-              .user{
+              .user, .userNavbar{
                 font-family: 'Poppins';
                 font-style: normal;
                 font-weight: 400;
@@ -230,7 +242,7 @@ export function initHeader() {
                 color: #000000;
               }
               @media (min-width: 800px){
-                .user{
+                .user, .userNavbar{
                   font-size: 18px;
                   line-height: 26px;
                   margin:0px;
@@ -284,7 +296,7 @@ export function initHeader() {
                     <a class="nav-link  link-reportar-mascotas">Reportar <br> mascotas</a>
                   </li>
                   <div class="d-flex flex-column justify-content-center usuario">
-                    <p class="user">${cs.email}</p>
+                    <p class="userNavbar"></p>
                     <p class="cerrar-sesion link-cerrar-sesion">Cerrar sesión</p>
                   </div>
                 </ul>
@@ -305,7 +317,7 @@ export function initHeader() {
                   
                   </ul>
                   <div class="nav-item contenedor-user">
-                    <p class="user">${cs.email}</p>
+                    <p class="user"></p>
                     <p class="cerrar-sesion cerrar-sesion-collapse">Cerrar sesión</p>
                   </div>
               </div>

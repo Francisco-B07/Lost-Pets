@@ -18,16 +18,19 @@ class MisMascotasReportadas extends HTMLElement {
         for (let index = 0; index < cs.misPets.length; index++) {
           const element = cs.misPets[index];
 
-          const card = document.createElement(
-            "card-my-pet-component"
-          ) as HTMLElement;
-          card.setAttribute("src", element.imageURL);
-          card.setAttribute("name", element.name);
-          card.setAttribute("ubicacion", element.ubicacion);
-          card.setAttribute("objectID", element.id);
-          card.classList.add("card-pet");
+          if (!element.eliminado) {
+            const card = document.createElement(
+              "card-my-pet-component"
+            ) as HTMLElement;
+            card.setAttribute("src", element.imageURL);
+            card.setAttribute("name", element.name);
+            card.setAttribute("ubicacion", element.ubicacion);
+            card.setAttribute("objectID", element.id);
+            card.setAttribute("encontrado", element.encontrado);
+            card.classList.add("card-pet");
 
-          this.shadow.appendChild(card);
+            this.shadow.appendChild(card);
+          }
         }
       }
     });

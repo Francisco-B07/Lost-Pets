@@ -8,11 +8,13 @@ export function initCardMyPet() {
     nombre: string;
     ubicacion: string;
     petId: string;
+    encontrado: string;
 
     connectedCallback() {
       this.nombre = this.getAttribute("name");
       this.ubicacion = this.getAttribute("ubicacion");
       this.petId = this.getAttribute("objectID");
+      this.encontrado = this.getAttribute("encontrado");
       const cs = state.getState();
       this.render();
 
@@ -128,7 +130,19 @@ export function initCardMyPet() {
        .editar{
         height: 24px;
         width: 24px;
-        margin: auto 4px;
+        margin-bottom: 20px;
+      }
+      .contenedor-editar{
+         margin: auto 4px;
+         display:flex;
+         flex-direction:column;
+         align-items: center;
+       }
+       .encontrado{
+        margin-bottom: 0px;
+        font-weight: 700;
+        color: #0cda0c;
+        font-size: 16px;
        }
 
       `;
@@ -147,8 +161,14 @@ export function initCardMyPet() {
               <div>
                 <h1 class="card__nombre-pet">${this.nombre} </h1>
                 <p class="card__ubicacion-pet">${this.ubicacion} </p>
-              </div>  
-              <img class="editar" src="${pencil}"  alt=""> 
+              </div>
+              <div class="contenedor-editar">
+                <img class="editar" src="${pencil}"  alt=""> 
+                <p class="encontrado">${
+                  this.encontrado ? this.encontrado : ""
+                }</p>
+              </div>
+                
             </div>
           </div>
 

@@ -47,6 +47,8 @@ class ReportarMascota extends HTMLElement {
         state.setLng(this.lng);
         state.setLat(this.lat);
         state.setUbicacion(this.ubicacion);
+        state.setEncontrado("");
+        state.setEliminar(false);
         state.reportarPet(imageDataURL, () => {
           Router.go("/mis-mascotas-reportadas");
         });

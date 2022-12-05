@@ -49,18 +49,19 @@ class Home extends HTMLElement {
           } else {
             for (let index = 0; index < cs.petsCerca.length; index++) {
               const element = cs.petsCerca[index];
+              if (!element.eliminado) {
+                const card = document.createElement(
+                  "card-pet-component"
+                ) as HTMLElement;
+                card.setAttribute("src", element.imageURL);
+                card.setAttribute("name", element.name);
+                card.setAttribute("ubicacion", element.ubicacion);
+                card.setAttribute("objectID", element.objectID);
+                card.setAttribute("userId", element.userId);
+                card.classList.add("card-pet");
 
-              const card = document.createElement(
-                "card-pet-component"
-              ) as HTMLElement;
-              card.setAttribute("src", element.imageURL);
-              card.setAttribute("name", element.name);
-              card.setAttribute("ubicacion", element.ubicacion);
-              card.setAttribute("objectID", element.objectID);
-              card.setAttribute("userId", element.userId);
-              card.classList.add("card-pet");
-
-              this.shadow.appendChild(card);
+                this.shadow.appendChild(card);
+              }
             }
           }
         });

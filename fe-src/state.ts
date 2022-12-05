@@ -20,6 +20,9 @@ const state = {
     reporteInfo: "",
     petId: 0,
     ruta: "",
+    encontrado: "",
+    eliminado: false,
+    imageURL: "",
   },
 
   listeners: [],
@@ -114,6 +117,21 @@ const state = {
   setPetId(petId: string) {
     const cs = this.getState();
     cs.petId = petId;
+    this.setState(cs);
+  },
+  setEncontrado(encontrado: string) {
+    const cs = this.getState();
+    cs.encontrado = encontrado;
+    this.setState(cs);
+  },
+  setEliminar(eliminado: boolean) {
+    const cs = this.getState();
+    cs.eliminado = eliminado;
+    this.setState(cs);
+  },
+  setImageURL(imageURL: string) {
+    const cs = this.getState();
+    cs.imageURL = imageURL;
     this.setState(cs);
   },
 
@@ -220,6 +238,8 @@ const state = {
         lng: cs.lng,
         ubicacion: cs.ubicacion,
         imageDataURL: imageDataURL,
+        encontrado: cs.encontrado,
+        eliminado: cs.eliminado,
       }),
     })
       .then((res) => {
@@ -244,6 +264,9 @@ const state = {
         lng: cs.lng,
         ubicacion: cs.ubicacion,
         imageDataURL: imageDataURL,
+        imageURL: cs.imageURL,
+        encontrado: cs.encontrado,
+        eliminado: cs.eliminado,
       }),
     })
       .then((res) => {
