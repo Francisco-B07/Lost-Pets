@@ -1,5 +1,7 @@
 import * as express from "express";
+import * as cors from "cors";
 import * as path from "path";
+
 import {
   checkUserExist,
   editarUser,
@@ -31,6 +33,14 @@ const app = express();
 app.use(
   express.json({
     limit: "50mb",
+  })
+);
+
+const allowedHosts = ["https://desafio-m8-apx.web.app"];
+
+app.use(
+  cors({
+    origin: allowedHosts,
   })
 );
 
