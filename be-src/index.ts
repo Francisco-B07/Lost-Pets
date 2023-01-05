@@ -21,6 +21,7 @@ import {
   updatePet,
 } from "./controllers/users-controller";
 import { sequelize } from "./models/conn";
+import { User } from "./models/users";
 
 // sequelize.sync({ force: true }).then((res) => console.log(res));
 
@@ -94,10 +95,10 @@ app.post("/check/email", async (req, res) => {
 
 // -------------- /ME --------------
 
-// app.get("/me", authMiddleware, async (req, res) => {
-//   const user = await User.findByPk(req._user.id);
-//   res.json(user);
-// });
+app.get("/me", authMiddleware, async (req, res) => {
+  const user = await User.findByPk(req._user.id);
+  res.json(user);
+});
 
 // -------------- CREAR PET --------------
 app.post("/pets", authMiddleware, async (req, res) => {
