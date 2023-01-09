@@ -37,13 +37,12 @@ app.use(
   })
 );
 
-const allowedHosts = ["https://desafio-m8-apx.web.app"];
+// const allowedHosts = [
+//   "https://desafio-m8-apx.web.app",
+//   "http://localhost:3000",
+// ];
 
-app.use(
-  cors({
-    origin: allowedHosts,
-  })
-);
+app.use(cors());
 
 // -------------- SIGNUP --------------
 app.post("/auth", async (req, res) => {

@@ -75,7 +75,7 @@ export async function editarUser(userData) {
 
       return user;
     } else {
-      throw "error, faltan datos para crear el usuario";
+      throw "error, faltan datos para editar el usuario";
     }
   }
 }
