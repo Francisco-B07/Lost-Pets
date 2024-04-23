@@ -42,7 +42,11 @@ app.use(
 //   "http://localhost:3000",
 // ];
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://desafio-m8-apx.web.app",
+  })
+);
 
 // -------------- SIGNUP --------------
 app.post("/auth", async (req, res) => {
@@ -94,13 +98,13 @@ app.post("/check/email", async (req, res) => {
 
 // -------------- /ME --------------
 
-app.get("/me", authMiddleware, async (req, res) => {
+app.get("/me", authMiddleware, async (req: any, res) => {
   const user = await User.findByPk(req._user.id);
   res.json(user);
 });
 
 // -------------- CREAR PET --------------
-app.post("/pets", authMiddleware, async (req, res) => {
+app.post("/pets", authMiddleware, async (req: any, res) => {
   if (!req.body) {
     res.status(400).json({
       message: "me faltan datos en el body",
@@ -119,7 +123,7 @@ app.get("/pets", async (req, res) => {
 });
 
 // -------------- OBTENER TODAS LAS MASCOTAS DE UN USUARIO--------------
-app.get("/me/pets", authMiddleware, async (req, res) => {
+app.get("/me/pets", authMiddleware, async (req: any, res) => {
   const allPets = await getAllPetsOfUser(req._user.id);
   if (allPets) {
     res.json(allPets);
